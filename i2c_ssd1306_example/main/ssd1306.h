@@ -10,7 +10,7 @@
 
 /* I2C address */
 #ifndef SSD1306_I2C_ADDR
-#define SSD1306_I2C_ADDR         0x78
+#define SSD1306_I2C_ADDR         0x3C//0x78
 /* Use defines.h for custom definitions */
 //#define SSD1306_I2C_ADDR       0x7A
 #endif

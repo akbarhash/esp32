@@ -1,10 +1,5 @@
 #include "ssd1306.h"
 
-/* Write command */
-//#define SSD1306_WRITECOMMAND(command)      X_WrByte(I2C_NUM_1,0x00,(command))
-/* Write data */
-//#define SSD1306_WRITEDATA(data1,data2)     X_WriteMulti(I2C_NUM_1,0x40,data1,data2)//TM_I2C_WriteMulti(SSD1306_I2C, SSD1306_I2C_ADDR, 0x40, SSD1306_Buffer[SSD1306_WIDTH * m], SSD1306_WIDTH);
-/* Absolute value */
 #define ABS(x)   ((x) > 0 ? (x) : -(x))
 
 /* SSD1306 data buffer */
@@ -78,15 +73,11 @@ void SSD1306_UpdateScreen(void) {
 		SSD1306_WRITECOMMAND(0x10);
 
 		// Write multi data
-		ret = X_WriteMulti(I2C_NUM_1,0x40,SSD1306_WIDTH, &SSD1306_Buffer[SSD1306_WIDTH * m]);
-				//SSD1306_WRITEDATA(SSD1306_WIDTH, &SSD1306_Buffer[SSD1306_WIDTH * m]);
-                if (ret == ESP_OK) {
-                  printf("-");
-                } else {
+		ret = X_WriteMulti(I2C_NUM_1,0x3C,0x40,SSD1306_WIDTH, &SSD1306_Buffer[SSD1306_WIDTH * m]);
+                if (ret == ESP_FAIL) {
                   printf("I2C Fail\n");
                 }
 
-		//TM_I2C_WriteMulti(SSD1306_I2C, SSD1306_I2C_ADDR, 0x40, &SSD1306_Buffer[SSD1306_WIDTH * m], SSD1306_WIDTH);
 	}
 }
 
@@ -463,12 +454,9 @@ void SSD1306_OFF(void) {
 void SSD1306_WRITECOMMAND(uint8_t command)
 {
    int ret;
-   ret = X_WrByte(I2C_NUM_1,0x00,command); 
-        if (ret == ESP_OK) {
-            printf("-");
-        } else {
+   ret = X_WrByte(I2C_NUM_1,0x3C,0x00,command); 
+        if (ret == ESP_FAIL) {
             printf("I2C Fail\n");
         }
 
 }
-
