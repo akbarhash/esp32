@@ -108,5 +108,5 @@ void app_main()
     i2c_example_master_init();
     SSD1306_Init();
 
-    xTaskCreate(i2c_test, "i2c_test", 1024, NULL, 10, NULL);
+    xTaskCreate(i2c_test_task, "i2c_test_task", 1024, NULL, 10, NULL);
 }
