@@ -8,8 +8,8 @@ static esp_err_t XI2CWrite(i2c_port_t i2c_num, uint8_t i2c_add, uint8_t* data_wr
 
   i2c_cmd_handle_t cmd = i2c_cmd_link_create();
   i2c_master_start(cmd);
-  i2c_master_write_byte(cmd, ( i2c_add << 1 ), ACK_CHECK_DIS);
-  i2c_master_write(cmd, data_wr, size, ACK_CHECK_DIS);
+  i2c_master_write_byte(cmd, ( i2c_add << 1 ) | I2C_MASTER_WRITE, ACK_CHECK_EN);
+  i2c_master_write(cmd, data_wr, size, ACK_CHECK_EN);
   i2c_master_stop(cmd);
   esp_err_t ret = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
   i2c_cmd_link_delete(cmd);
@@ -22,11 +22,11 @@ static esp_err_t XI2CRead(i2c_port_t i2c_num, uint8_t i2c_add, uint8_t* data_rd,
   }
   i2c_cmd_handle_t cmd = i2c_cmd_link_create();
   i2c_master_start(cmd);
-  i2c_master_write_byte(cmd, ( i2c_add << 1 ), ACK_CHECK_DIS);
+  i2c_master_write_byte(cmd, ( i2c_add << 1 ) | I2C_MASTER_READ, ACK_CHECK_EN);
   if (size > 1) {
-      i2c_master_read(cmd, data_rd, size, ACK_VAL);
+      i2c_master_read(cmd, data_rd, size - 1, ACK_VAL);
   }
-  i2c_master_read_byte(cmd, data_rd + size, ACK_VAL);
+  i2c_master_read_byte(cmd, data_rd + size - 1 , NACK_VAL);
   i2c_master_stop(cmd);
   esp_err_t ret = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
   i2c_cmd_link_delete(cmd);
@@ -45,7 +45,6 @@ esp_err_t X_WriteMulti(i2c_port_t i2c_num, uint8_t i2c_add, uint8_t index, uint3
 
 esp_err_t X_ReadMulti(i2c_port_t i2c_num, uint8_t i2c_add, uint8_t index, uint32_t count, uint8_t* data_rd) {
     esp_err_t ret;
-
     ret = XI2CWrite(i2c_num, i2c_add, &index, 0x1);
     if (ret == ESP_FAIL) {
       return ret;
@@ -214,10 +213,7 @@ esp_err_t X_RdDWord(i2c_port_t i2c_num, uint8_t i2c_add, uint8_t index, uint32_t
 }
 
 esp_err_t X_PollingDelay(void) {
-
   esp_err_t ret;
-  X_OsDelay();
-  ret = ESP_OK;
-  return ret;
-
+  vTaskDelay(20/portTICK_PERIOD_MS);
+  return ret = ESP_OK;
 }

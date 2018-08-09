@@ -73,7 +73,7 @@ void SSD1306_UpdateScreen(void) {
 		SSD1306_WRITECOMMAND(0x10);
 
 		// Write multi data
-		ret = X_WriteMulti(I2C_NUM_1,0x3C,0x40,SSD1306_WIDTH, &SSD1306_Buffer[SSD1306_WIDTH * m]);
+		ret = X_WriteMulti(I2C_NUM_1,SSD1306_I2C_ADDR,0x40,SSD1306_WIDTH, &SSD1306_Buffer[SSD1306_WIDTH * m]);
                 if (ret == ESP_FAIL) {
                   printf("I2C Fail\n");
                 }
@@ -454,7 +454,7 @@ void SSD1306_OFF(void) {
 void SSD1306_WRITECOMMAND(uint8_t command)
 {
    int ret;
-   ret = X_WrByte(I2C_NUM_1,0x3C,0x00,command); 
+   ret = X_WrByte(I2C_NUM_1,SSD1306_I2C_ADDR,0x00,command); 
         if (ret == ESP_FAIL) {
             printf("I2C Fail\n");
         }
